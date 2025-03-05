@@ -17,11 +17,35 @@ app.get('/', (req, res) => {
 app.post("/todos", async (req, res) => {
     try {
         console.log(req.body)
+        const { description } = req.body;
+        const newTodo = await pool.query(
+            "INSERT INTO todo (description) VALUES($1) RETURNING *",
+            [description]
+        );
+        res.json(newTodo);
     } catch (error) {
         console.error(error.message);
     }
 });
 
-app.listen(5000, () => {
+// get all todos 
+app.get("/todos", async (req, res) => {
+    try {
+        const allTodos = await pool.query("SELECT * FROM todo");
+        res.send(allTodos.rows);
+    } catch (error) {
+        console.error(error.message);
+    }
+})
+
+
+// get a todo 
+
+// update a todo 
+
+// delete a todo 
+
+
+app.listen(port, () => {
     console.log("Server is started on port 5000")
 });
